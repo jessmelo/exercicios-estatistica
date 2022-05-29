@@ -27,7 +27,7 @@ def ex1():
 
 ex1()
 
-def test():
+def teste_com_pmf():
     from scipy.stats import multinomial
     prob = multinomial.pmf(x=[1,1], n=2, p=[1/7, 6/7])
     print("A probabilidade com distribuição multinomial de apenas um dos sorteados ser da turma 3 é de : ")
@@ -38,4 +38,14 @@ def test():
     print("Probabilidade total com distribuição multinomial: ")
     print(prob + prob2)
 
-test()
+teste_com_pmf()
+
+def teste_com_gerador():
+    import numpy as np
+    rng = np.random.default_rng()
+    simulation = rng.multinomial(100000, [2/7, 1/7, 1/7, 1/7, 1/7, 1/7], size=2)
+    prob = (simulation[0][2] + simulation[1][2]) / 100000
+    print(simulation)
+    print(prob)
+
+teste_com_gerador()
