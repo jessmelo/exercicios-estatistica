@@ -9,43 +9,22 @@
 # único cuidado a tomar é que você precisará calcular corretamente as probabilidades de um
 # estudante ser sorteado em cada uma das seis séries.
 
-import pandas as pd
-
 def ex1():
-    escola = pd.read_csv("primeira_lista\escola.csv", sep=";", index_col=False)
+    import numpy as np
 
-    iterable = 10**6
-    sorteado_turma3 = 0
-    for i in range(iterable):
-        amostra = escola.sample(2, replace=True)
-        if(amostra.iat[0,0] == "turma3" or amostra.iat[1,0] == "turma3"):
-            sorteado_turma3 += 1
+    # simulação de sorteios com gerador de distribuição multinomial
+    n_simulations = 1000000 # número de simulações
+    rng = np.random.default_rng()
+    simulation = rng.multinomial(2, [2/7, 1/7, 1/7, 1/7, 1/7, 1/7], size=n_simulations)
+    
+    # contando o número de vezes que foi sorteado pelo menos um aluno da turma 3 (posição 3 do array)
+    sorteados_turma3 = 0
+    for i in range(n_simulations):
+        if(int(simulation[i][2]) >= 1):
+            sorteados_turma3 += 1
 
-    probabilidade = sorteado_turma3 / 10**6
-    print("A probabilidade de um dos sorteados ser da turma 3 (com simulação) é de : ")
-    print(probabilidade)
+    prob = sorteados_turma3 / n_simulations
+    print("A probabilidade de um dos alunos sorteados ser da turma 3 é ")
+    print(prob)
 
 ex1()
-
-def teste_com_pmf():
-    from scipy.stats import multinomial
-    prob = multinomial.pmf(x=[1,1], n=2, p=[1/7, 6/7])
-    print("A probabilidade com distribuição multinomial de apenas um dos sorteados ser da turma 3 é de : ")
-    print(prob)
-    print("A probabilidade com distribuição multinomial de os dois sorteados ser da turma 3 é de : ")
-    prob2 = multinomial.pmf(x=[2,0], n=2, p=[1/7, 6/7])
-    print(prob2)
-    print("Probabilidade total com distribuição multinomial: ")
-    print(prob + prob2)
-
-teste_com_pmf()
-
-def teste_com_gerador():
-    import numpy as np
-    rng = np.random.default_rng()
-    simulation = rng.multinomial(100000, [2/7, 1/7, 1/7, 1/7, 1/7, 1/7], size=2)
-    prob = (simulation[0][2] + simulation[1][2]) / 100000
-    print(simulation)
-    print(prob)
-
-teste_com_gerador()
